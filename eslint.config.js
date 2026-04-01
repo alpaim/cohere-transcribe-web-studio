@@ -1,7 +1,7 @@
 import antfu from "@antfu/eslint-config";
 
 export default antfu({
-    ignores: ["bun.lock", ".agents"],
+    ignores: ["bun.lock", ".agents", "src/components/ui", "*.md"],
     stylistic: {
         semi: true,
         indent: 4,
