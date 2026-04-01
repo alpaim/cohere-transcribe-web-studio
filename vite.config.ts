@@ -10,4 +10,11 @@ export default defineConfig({
             "@": "/src",
         },
     },
+    server: {
+        // Needed only for local dev behind private HTTPS reverse proxy.
+        // WebGPU requires a secure context, and we access Vite through a private domain
+        // served by my homelab nginx. Using `true` avoids hardcoding that private host in git.
+        // Do not copy this to production; prefer explicit hosts when possible.
+        allowedHosts: true,
+    },
 });
