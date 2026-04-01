@@ -19,11 +19,6 @@ export interface TranscriptionEntry {
 
 export type ModelStatus = "idle" | "downloading" | "ready" | "error";
 
-export interface ModelSettings {
-    dtype: "q4" | "q8";
-    device: "webgpu" | "wasm";
-}
-
 export interface Language {
     code: string;
     label: string;

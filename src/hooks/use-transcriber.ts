@@ -9,14 +9,18 @@ import { useCallback, useRef } from "react";
 import { useAppStore } from "@/lib/store";
 
 const MODEL_ID = "onnx-community/cohere-transcribe-03-2026-ONNX";
+const MODEL_DTYPE = "q4";
+const MODEL_DEVICE = "webgpu";
+
+function isWebGPUAvailable(): boolean {
+    return typeof navigator !== "undefined" && "gpu" in navigator;
+}
 
 export function useTranscriber() {
     const pipelineRef = useRef<AutomaticSpeechRecognitionPipeline | null>(null);
     const loadingRef = useRef<Promise<void> | null>(null);
 
     const {
-        modelStatus,
-        modelSettings,
         setModelStatus,
         setModelProgress,
         setModelStatusText,
@@ -29,6 +33,13 @@ export function useTranscriber() {
         if (loadingRef.current)
             return loadingRef.current;
 
+        if (!isWebGPUAvailable()) {
+            setModelStatus("error");
+            setModelError("WebGPU is not available in your browser. This model requires WebGPU support.");
+            setModelStatusText("WebGPU not available");
+            return;
+        }
+
         const loadPromise = (async () => {
             setModelStatus("downloading");
             setModelProgress(0);
@@ -39,8 +50,8 @@ export function useTranscriber() {
                     "automatic-speech-recognition",
                     MODEL_ID,
                     {
-                        dtype: modelSettings.dtype,
-                        device: modelSettings.device,
+                        dtype: MODEL_DTYPE,
+                        device: MODEL_DEVICE,
                         progress_callback: (info: { status: string; progress?: number }) => {
                             if (info.status === "progress_total") {
                                 const pct = Math.round(info.progress ?? 0);
@@ -65,7 +76,7 @@ export function useTranscriber() {
 
         loadingRef.current = loadPromise;
         return loadPromise;
-    }, [modelSettings, setModelStatus, setModelProgress, setModelStatusText, setModelError]);
+    }, [setModelStatus, setModelProgress, setModelStatusText, setModelError]);
 
     const transcribe = useCallback(
         async (
@@ -100,7 +111,7 @@ export function useTranscriber() {
         [],
     );
 
-    const isModelReady = modelStatus === "ready";
+    const isModelReady = useAppStore(state => state.modelStatus) === "ready";
 
     return {
         loadModel,

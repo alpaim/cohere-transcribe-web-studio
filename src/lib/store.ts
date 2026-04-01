@@ -1,5 +1,4 @@
 import type {
-    ModelSettings,
     ModelStatus,
     TranscriptionEntry,
     TranscriptionOptions,
@@ -17,7 +16,6 @@ interface AppState {
     modelProgress: number;
     modelStatusText: string;
     modelError: string | null;
-    modelSettings: ModelSettings;
 
     // Transcription
     isTranscribing: boolean;
@@ -40,7 +38,6 @@ interface AppActions {
     setModelProgress: (p: number) => void;
     setModelStatusText: (t: string) => void;
     setModelError: (e: string | null) => void;
-    setModelSettings: (s: Partial<ModelSettings>) => void;
     setTranscriptionOptions: (o: Partial<TranscriptionOptions>) => void;
     setCurrentFile: (f: File | null) => void;
     setStreamedText: (t: string) => void;
@@ -64,18 +61,12 @@ const DEFAULT_OPTIONS: TranscriptionOptions = {
     num_beams: 1,
 };
 
-const DEFAULT_SETTINGS: ModelSettings = {
-    dtype: "q4",
-    device: "webgpu",
-};
-
 export const useAppStore = create<AppState & AppActions>((set, get) => ({
     // Model state
     modelStatus: "idle",
     modelProgress: 0,
     modelStatusText: "",
     modelError: null,
-    modelSettings: DEFAULT_SETTINGS,
 
     // Transcription state
     isTranscribing: false,
@@ -97,9 +88,6 @@ export const useAppStore = create<AppState & AppActions>((set, get) => ({
     setModelProgress: p => set({ modelProgress: p }),
     setModelStatusText: t => set({ modelStatusText: t }),
     setModelError: e => set({ modelError: e }),
-    setModelSettings: s => set(state => ({
-        modelSettings: { ...state.modelSettings, ...s },
-    })),
     setTranscriptionOptions: o => set(state => ({
         transcriptionOptions: { ...state.transcriptionOptions, ...o },
     })),
