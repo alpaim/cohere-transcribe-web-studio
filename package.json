@@ -1,6 +1,7 @@
 {
   "name": "cohere-transcribe-web-studio",
   "private": true,
+  "author": "alpaim",
   "version": "0.0.0",
   "type": "module",
   "scripts": {
