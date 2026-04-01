@@ -1,40 +1,57 @@
 import { getFlagEmoji, LANGUAGES } from "@/components/language-selector";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select";
 import { useAppStore } from "@/lib/store";
-import { cn } from "@/lib/utils";
 
 export function LanguageSelector() {
     const { transcriptionOptions, setTranscriptionOptions } = useAppStore();
 
+    const currentLang = LANGUAGES.find(l => l.code === transcriptionOptions.language);
+
     return (
-        <div className="flex flex-wrap gap-2">
-            {LANGUAGES.map(lang => (
-                <button
-                    key={lang.code}
-                    onClick={() => setTranscriptionOptions({ language: lang.code })}
-                    className={cn(
-                        "px-3 py-1.5 rounded-full text-sm transition-colors border cursor-pointer",
-                        transcriptionOptions.language === lang.code
-                            ? "bg-primary text-primary-foreground border-transparent"
-                            : "bg-muted text-muted-foreground border-border hover:border-primary/50 hover:text-foreground",
-                    )}
-                >
-                    <span className="mr-1.5">{getFlagEmoji(lang.code)}</span>
-                    {lang.label}
-                    {lang.label !== lang.native && (
-                        <span className={cn(
-                            "ml-1 text-xs",
-                            transcriptionOptions.language === lang.code
-                                ? "text-primary-foreground/60"
-                                : "text-muted-foreground/60",
-                        )}
-                        >
-                            /
-                            {" "}
-                            {lang.native}
+        <Select
+            value={transcriptionOptions.language}
+            onValueChange={v => setTranscriptionOptions({ language: v })}
+        >
+            <SelectTrigger className="w-full">
+                <SelectValue>
+                    {currentLang && (
+                        <span className="flex items-center gap-2">
+                            <span>{getFlagEmoji(currentLang.code)}</span>
+                            <span>{currentLang.label}</span>
+                            {currentLang.label !== currentLang.native && (
+                                <span className="text-muted-foreground">
+                                    /
+                                    {" "}
+                                    {currentLang.native}
+                                </span>
+                            )}
                         </span>
                     )}
-                </button>
-            ))}
-        </div>
+                </SelectValue>
+            </SelectTrigger>
+            <SelectContent>
+                {LANGUAGES.map(lang => (
+                    <SelectItem key={lang.code} value={lang.code}>
+                        <span className="flex items-center gap-2">
+                            <span>{getFlagEmoji(lang.code)}</span>
+                            <span>{lang.label}</span>
+                            {lang.label !== lang.native && (
+                                <span className="text-muted-foreground">
+                                    /
+                                    {" "}
+                                    {lang.native}
+                                </span>
+                            )}
+                        </span>
+                    </SelectItem>
+                ))}
+            </SelectContent>
+        </Select>
     );
 }
