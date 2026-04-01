@@ -9,7 +9,7 @@ interface HeaderProps {
 export function Header({ onMenuClick, isMobile }: HeaderProps) {
     return (
         <header className="flex items-center justify-between px-4 py-3 border-b bg-background">
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-3 min-w-0">
                 {isMobile && (
                     <Button variant="ghost" size="icon-sm" onClick={onMenuClick}>
                         <svg
@@ -25,11 +25,12 @@ export function Header({ onMenuClick, isMobile }: HeaderProps) {
                         </svg>
                     </Button>
                 )}
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-2 min-w-0">
                     <svg
                         viewBox="0 0 24 24"
                         width="24"
                         height="24"
+                        className="shrink-0"
                         xmlns="http://www.w3.org/2000/svg"
                     >
                         <path
@@ -49,11 +50,14 @@ export function Header({ onMenuClick, isMobile }: HeaderProps) {
                             fill="#FF7759"
                         />
                     </svg>
-                    <h1 className="text-lg font-semibold">Cohere Transcribe Studio</h1>
+                    <h1 className="text-lg font-semibold truncate">
+                        <span className="hidden sm:inline">Cohere Transcribe Studio</span>
+                        <span className="sm:hidden">CTS</span>
+                    </h1>
                 </div>
             </div>
 
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2 shrink-0">
                 <ModelStatusBadge />
             </div>
         </header>
